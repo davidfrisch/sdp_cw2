@@ -16,8 +16,9 @@ def get_unit_test_files(repo_path):
           elif "test" in file.lower() and file.endswith(".java"):
               test_files.append(os.path.join(root, file))
 
-    print("Total number of test files: ", len(test_files))
-    return test_files
+    unique_test_files = list(set(test_files))
+    print("Total number of test files: ", len(unique_test_files))
+    return unique_test_files
 
 def get_target_files(repo_path, all_test_files):
     map_files = []
@@ -27,7 +28,8 @@ def get_target_files(repo_path, all_test_files):
             for file in files:
                 if file.endswith(".java"):
                     if test_file.split("/")[-1].replace("Test", "") == file.split("/")[-1]:
-                        map_files.append({'target': os.path.join(root, file), 'test': test_file})
+                        test_file_name = test_file.split("/")[-1]
+                        map_files.append({'target': file, 'test': test_file_name})
                         break
 
     print("Total number of target files found: ", len(map_files))

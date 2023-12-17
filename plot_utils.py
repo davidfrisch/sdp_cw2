@@ -2,9 +2,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def plot_lines_test_vs_target_dates(metric_lines_test, metric_lines_target, metric):
-      
-    test_file = [(x['date'], x[metric]) for x in metric_lines_test]
-    target_file = [(x['date'], x[metric]) for x in metric_lines_target]
+    
+    test_file = [(x['commit'].committer_date, x[metric]) for x in metric_lines_test]
+    target_file = [(x['commit'].committer_date, x[metric]) for x in metric_lines_target]
 
     test_file.sort(key=lambda x: x[0])
     target_file.sort(key=lambda x: x[0])
@@ -33,10 +33,11 @@ def plot_lines_test_vs_target_dates(metric_lines_test, metric_lines_target, metr
     plt.show()
 
 
-def plot_test_vs_target_metric_numeric(metric_lines_test, metric_lines_target, metric):
+
+def plot_lines_test_vs_target_numeric(metric_lines_test, metric_lines_target, metric):
       
-    test_file = [(x['date'], x[metric]) for x in metric_lines_test]
-    target_file = [(x['date'], x[metric]) for x in metric_lines_target]
+    test_file = [(x['commit'].committer_date, x[metric]) for x in metric_lines_test]
+    target_file = [(x['commit'].committer_date, x[metric]) for x in metric_lines_target]
 
     test_file.sort(key=lambda x: x[0])
     target_file.sort(key=lambda x: x[0])
@@ -52,8 +53,8 @@ def plot_test_vs_target_metric_numeric(metric_lines_test, metric_lines_target, m
 
     fig, ax = plt.subplots()
 
-    ax.plot([all_dates.index(date) + 1 for date in test_file_dates], test_file_values, marker='x', label='Test')
-    ax.plot([all_dates.index(date) + 1 for date in target_file_dates], target_file_values, marker='o', label='Target')
+    ax.plot([all_dates.index(date) for date in test_file_dates], test_file_values, marker='x', label='Test')
+    ax.plot([all_dates.index(date) for date in target_file_dates], target_file_values, marker='o', label='Target')
 
     ax.set_xticks(x_axis)
 
@@ -67,8 +68,8 @@ def plot_test_vs_target_metric_numeric(metric_lines_test, metric_lines_target, m
 
 def plot_lines_test_vs_target_normalise_100(metric_lines_test, metric_lines_target, metric):
       
-    test_file = [(x['date'], x[metric]) for x in metric_lines_test]
-    target_file = [(x['date'], x[metric]) for x in metric_lines_target]
+    test_file = [(x['commit'].committer_date, x[metric]) for x in metric_lines_test]
+    target_file = [(x['commit'].committer_date, x[metric]) for x in metric_lines_target]
 
     test_file.sort(key=lambda x: x[0])
     target_file.sort(key=lambda x: x[0])
@@ -82,7 +83,10 @@ def plot_lines_test_vs_target_normalise_100(metric_lines_test, metric_lines_targ
     all_dates = sorted(list(set(test_file_dates + target_file_dates)))
     min_value = min(all_dates)
     max_value = max(all_dates)
-    normalized_x_axis = [((date - min_value) / (max_value - min_value)) * 100 for date in all_dates]
+
+    # TODO David: check if this is correct the denominator
+    denominator = max_value - min_value if max_value - min_value != 0 else 1
+    normalized_x_axis = [((date - min_value) / denominator) * 100 for date in all_dates]
     fig, ax = plt.subplots()
 
     ax.plot([normalized_x_axis[all_dates.index(date)] for date in test_file_dates], test_file_values, marker='x', label='Test')
