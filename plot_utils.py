@@ -104,3 +104,63 @@ def plot_lines_test_vs_target_normalise_100(metric_lines_test, metric_lines_targ
     ax.legend()
 
     plt.show()
+
+
+def plot_lines_test_vs_target_numeric_side_by_side(metric_lines_test, metric_lines_target, metric_1, metric_2):
+          
+    test_file_metric_1 = [(x['commit'].committer_date, x[metric_1]) for x in metric_lines_test]
+    target_file_metric_1 = [(x['commit'].committer_date, x[metric_1]) for x in metric_lines_target]
+
+    test_file_metric_1.sort(key=lambda x: x[0])
+    target_file_metric_1.sort(key=lambda x: x[0])
+
+
+    test_file_metric_2 = [(x['commit'].committer_date, x[metric_2]) for x in metric_lines_test]
+    target_file_metric_2 = [(x['commit'].committer_date, x[metric_2]) for x in metric_lines_target]
+
+    test_file_metric_2.sort(key=lambda x: x[0])
+    target_file_metric_2.sort(key=lambda x: x[0])
+
+
+    test_filename = metric_lines_test[0]['filename']
+    target_filename = metric_lines_target[0]['filename']
+
+
+    test_file_dates = [x[0] for x in test_file_metric_1]
+    test_file_values = [x[1] for x in test_file_metric_1]
+
+    target_file_dates = [x[0] for x in target_file_metric_1]
+    target_file_values = [x[1] for x in target_file_metric_1]
+
+    all_dates = sorted(list(set(test_file_dates + target_file_dates)))
+    x_axis = np.arange(len(all_dates))
+
+    fig, (ax1, ax2) = plt.subplots(1,2, figsize=(20,8))
+
+    ax1.plot([all_dates.index(date) for date in test_file_dates], test_file_values, marker='x', label='Test')
+    ax1.plot([all_dates.index(date) for date in target_file_dates], target_file_values, marker='o', label='Target')
+
+    ax1.set_xticks(x_axis)
+
+    ax1.set_xlabel(f"{target_filename} - {metric_1}")
+    ax1.set_ylabel(metric_1)
+
+    test_file_dates = [x[0] for x in test_file_metric_2]
+    test_file_values = [x[1] for x in test_file_metric_2]
+
+    target_file_dates = [x[0] for x in target_file_metric_2]
+    target_file_values = [x[1] for x in target_file_metric_2]
+
+    all_dates = sorted(list(set(test_file_dates + target_file_dates)))
+
+    ax2.plot([all_dates.index(date) for date in test_file_dates], test_file_values, marker='x', label='Test')
+    ax2.plot([all_dates.index(date) for date in target_file_dates], target_file_values, marker='o', label='Target')
+
+    ax2.set_xticks(x_axis)
+
+    ax2.set_xlabel(f"{target_filename} - {metric_2}")
+    ax2.set_ylabel(metric_2)
+
+    ax2.legend()
+
+    plt.show()
