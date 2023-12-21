@@ -39,6 +39,9 @@ def plot_lines_test_vs_target_numeric(metric_lines_test, metric_lines_target, me
     test_file = [(x['commit'].committer_date, x[metric]) for x in metric_lines_test]
     target_file = [(x['commit'].committer_date, x[metric]) for x in metric_lines_target]
 
+    test_filename = metric_lines_test[0]['filename']
+    target_filename = metric_lines_target[0]['filename']
+
     test_file.sort(key=lambda x: x[0])
     target_file.sort(key=lambda x: x[0])
 
@@ -58,7 +61,7 @@ def plot_lines_test_vs_target_numeric(metric_lines_test, metric_lines_target, me
 
     ax.set_xticks(x_axis)
 
-    ax.set_xlabel('Integer-based X-axis')
+    ax.set_xlabel(f"{target_filename} - {metric}")
     ax.set_ylabel(metric)
 
     ax.legend()

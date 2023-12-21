@@ -18,12 +18,13 @@ def get_modifications_of_files(repo_path, files):
                 files[m.filename].append({'commit': commit, 
                                       'filename': m.filename,
                                       'change_type': m.change_type,
-                                      'diff_parsed': m.diff_parsed,
                                       'added_lines': m.added_lines,
                                       'deleted_lines': m.deleted_lines,
                                       'nloc': m.nloc,
                                       'complexity': m.complexity,
                                       'token_count': m.token_count,
+                                      'number_methods': len(m.methods),
+                                      'number_methods_before': len(m.methods_before),
                                       })
 
 
