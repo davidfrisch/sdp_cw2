@@ -106,14 +106,18 @@ def __neg_evaluation_target_has_increased_but_test_has_not(commit_history):
 
 def __tdd_score_pair(test, target):
     list_of_metric = ["number_methods", "nloc", "added_lines", "complexity"]  
+    NUMBER_FUNCTIONS_FOR_POS_SCORING = 2
     tmp_sccore = 0
+    pos_score = 0
     for metric in list_of_metric:
         merge_history = __merge_history_test_vs_target(test, target, metric)
-        tmp_sccore += __pos_evaluation_increased_from_previous_commit(merge_history)
-        tmp_sccore += __pos_evaluation_test_target_on_same_commit(merge_history)
+        pos_score += __pos_evaluation_increased_from_previous_commit(merge_history)
+        pos_score += __pos_evaluation_test_target_on_same_commit(merge_history)
+        tmp_sccore += pos_score
         tmp_sccore += __neg_evaluation_target_has_increased_but_test_has_not(merge_history)
-    
-    return tmp_sccore
+
+    percentage_tdd = pos_score / (len(list_of_metric) * NUMBER_FUNCTIONS_FOR_POS_SCORING)    
+    return {"tdd_score": tmp_sccore, "percentage": percentage_tdd}
 
 
 def tdd_score(map_files):
@@ -121,8 +125,14 @@ def tdd_score(map_files):
         return None
 
     total_score = 0
+    tdd_percentange = {}
     for map_ in map_files:
-        total_score += __tdd_score_pair(map_['test'], map_['target'])
+        results = __tdd_score_pair(map_['test'], map_['target'])
+        total_score += results['tdd_score']
+        tdd_percentange[map_['target'][0]['filename']] = results['percentage']
+
 
     average_score = total_score / len(map_files)
-    return average_score
+    overall_percentage = sum(tdd_percentange.values()) / len(tdd_percentange.values())
+    print("TDD percentage score: ", overall_percentage)
+    return average_score, overall_percentage
