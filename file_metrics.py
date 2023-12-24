@@ -12,6 +12,9 @@ def get_history_files(map_files):
         test_file = pair['test']
         target_file = pair['target']
 
+        if len(test_file) == 0 or len(target_file) == 0:
+            continue
+
         first_test_date = test_file[0]['commit'].committer_date
         first_target_date = target_file[0]['commit'].committer_date
 
