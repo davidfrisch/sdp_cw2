@@ -3,8 +3,11 @@ import numpy as np
 
 def plot_lines_test_vs_target_dates(metric_lines_test, metric_lines_target, metric):
     
-    test_file = [(x['commit'].committer_date, x[metric]) for x in metric_lines_test]
-    target_file = [(x['commit'].committer_date, x[metric]) for x in metric_lines_target]
+    test_file_no_rename = [x for x in metric_lines_test if "RENAME" not in str(x['change_type'])]
+    target_file_no_rename = [x for x in metric_lines_target if "RENAME" not in str(x['change_type'])]
+
+    test_file = [(x['commit'].committer_date, x[metric]) for x in test_file_no_rename]
+    target_file = [(x['commit'].committer_date, x[metric]) for x in target_file_no_rename]
 
     test_file.sort(key=lambda x: x[0])
     target_file.sort(key=lambda x: x[0])
@@ -35,9 +38,12 @@ def plot_lines_test_vs_target_dates(metric_lines_test, metric_lines_target, metr
 
 
 def plot_lines_test_vs_target_numeric(metric_lines_test, metric_lines_target, metric):
-      
-    test_file = [(x['commit'].committer_date, x[metric]) for x in metric_lines_test]
-    target_file = [(x['commit'].committer_date, x[metric]) for x in metric_lines_target]
+    
+    test_file_no_rename = [x for x in metric_lines_test if "RENAME" not in str(x['change_type'])]
+    target_file_no_rename = [x for x in metric_lines_target if "RENAME" not in str(x['change_type'])]
+
+    test_file = [(x['commit'].committer_date, x[metric]) for x in test_file_no_rename]
+    target_file = [(x['commit'].committer_date, x[metric]) for x in target_file_no_rename]
 
     test_filename = metric_lines_test[0]['filename']
     target_filename = metric_lines_target[0]['filename']
@@ -71,8 +77,11 @@ def plot_lines_test_vs_target_numeric(metric_lines_test, metric_lines_target, me
 
 def plot_lines_test_vs_target_normalise_100(metric_lines_test, metric_lines_target, metric):
       
-    test_file = [(x['commit'].committer_date, x[metric]) for x in metric_lines_test]
-    target_file = [(x['commit'].committer_date, x[metric]) for x in metric_lines_target]
+    test_file_no_rename = [x for x in metric_lines_test if "RENAME" not in str(x['change_type'])]
+    target_file_no_rename = [x for x in metric_lines_target if "RENAME" not in str(x['change_type'])]
+
+    test_file = [(x['commit'].committer_date, x[metric]) for x in test_file_no_rename]
+    target_file = [(x['commit'].committer_date, x[metric]) for x in target_file_no_rename]
 
     test_file.sort(key=lambda x: x[0])
     target_file.sort(key=lambda x: x[0])
@@ -108,15 +117,17 @@ def plot_lines_test_vs_target_normalise_100(metric_lines_test, metric_lines_targ
 
 def plot_lines_test_vs_target_numeric_side_by_side(metric_lines_test, metric_lines_target, metric_1, metric_2):
           
-    test_file_metric_1 = [(x['commit'].committer_date, x[metric_1]) for x in metric_lines_test]
-    target_file_metric_1 = [(x['commit'].committer_date, x[metric_1]) for x in metric_lines_target]
+    test_file_no_rename = [x for x in metric_lines_test if "RENAME" not in str(x['change_type'])]
+    target_file_no_rename = [x for x in metric_lines_target if "RENAME" not in str(x['change_type'])]
+
+    test_file_metric_1 = [(x['commit'].committer_date, x[metric_1]) for x in test_file_no_rename]
+    target_file_metric_1 = [(x['commit'].committer_date, x[metric_1]) for x in target_file_no_rename]
 
     test_file_metric_1.sort(key=lambda x: x[0])
     target_file_metric_1.sort(key=lambda x: x[0])
 
-
-    test_file_metric_2 = [(x['commit'].committer_date, x[metric_2]) for x in metric_lines_test]
-    target_file_metric_2 = [(x['commit'].committer_date, x[metric_2]) for x in metric_lines_target]
+    test_file_metric_2 = [(x['commit'].committer_date, x[metric_2]) for x in test_file_no_rename]
+    target_file_metric_2 = [(x['commit'].committer_date, x[metric_2]) for x in target_file_no_rename]
 
     test_file_metric_2.sort(key=lambda x: x[0])
     target_file_metric_2.sort(key=lambda x: x[0])

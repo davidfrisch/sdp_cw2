@@ -1,0 +1,13 @@
+name,total_test_files,total_target_files,total_before,total_same,total_after
+maven-resolver,160,137,1,91,45
+airavata,81,64,0,19,45
+james-project,2049,1236,5,922,309
+logging-log4j2,859,531,10,251,270
+struts1,37,31,0,4,27
+ofbiz-framework,87,18,0,2,16
+cocoon,143,19,0,11,8
+dubbo,894,854,5,355,494
+kafka,1451,1116,7,763,346
+incubator-seata,422,310,2,154,154
+skywalking,211,162,2,102,58
+flink,3815,2191,81,1361,749
