@@ -1,3 +1,4 @@
 sdp_venv
 venv
 __pycache__
+*.ipynb
