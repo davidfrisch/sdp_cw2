@@ -9,7 +9,10 @@ def git_see_merge(repo_path, hash):
     all_files_changes = []
     for line in show_results_arrays:
         if ".java" in line:
-            added_lines, deleted_lines, file = line.split("\t")
+            split_lines = line.split("\t")
+            if len(split_lines) != 3:
+                continue
+            added_lines, deleted_lines, file = split_lines
             filename = file.split("/")[-1].strip()
             added_lines = int(added_lines)
             deleted_lines = int(deleted_lines)

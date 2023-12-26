@@ -34,8 +34,11 @@ What does it mean "A phase that did not follow TDD"?
 import numpy as np
 
 def __merge_history_test_vs_target(test, target, metric):
-    test_file = [(x['commit'].committer_date, x[metric]) for x in test]
-    target_file = [(x['commit'].committer_date, x[metric]) for x in target]
+    test_file_no_rename = [x for x in test if "RENAME" not in str(x['change_type'])]
+    target_file_no_rename = [x for x in target if "RENAME" not in str(x['change_type'])]
+
+    test_file = [(x['commit'].committer_date, x[metric]) for x in test_file_no_rename]
+    target_file = [(x['commit'].committer_date, x[metric]) for x in target_file_no_rename]
 
     test_file.sort(key=lambda x: x[0])
     target_file.sort(key=lambda x: x[0])
@@ -70,7 +73,7 @@ def __pos_evaluation_increased_from_previous_commit(commit_history):
         if test_value[i] > test_value[i-1] and target_value[i] > target_value[i-1]:
             score += 1
   
-    return score / len(x_axis)
+    return score / len(x_axis) if len(x_axis) > 0 else 0
 
 
 def __pos_evaluation_test_target_on_same_commit(commit_history):
@@ -83,7 +86,7 @@ def __pos_evaluation_test_target_on_same_commit(commit_history):
         if test_value[i] > 0 and target_value[i] > 0:
             score += 1
   
-    return score / len(x_axis)
+    return score / len(x_axis) if len(x_axis) > 0 else 0
 
 
 def __neg_evaluation_target_has_increased_but_test_has_not(commit_history):
@@ -101,7 +104,7 @@ def __neg_evaluation_target_has_increased_but_test_has_not(commit_history):
         if test_value[i] == test_value[i-1] and target_value[i] > target_value[i-1]:
             score -= 1
   
-    return score / len(x_axis)
+    return score / len(x_axis) if len(x_axis) > 0 else 0
 
 
 def __tdd_score_pair(test, target):
@@ -134,5 +137,4 @@ def tdd_score(map_files):
 
     average_score = total_score / len(map_files)
     overall_percentage = sum(tdd_percentange.values()) / len(tdd_percentange.values())
-    print("TDD percentage score: ", overall_percentage)
     return average_score, overall_percentage

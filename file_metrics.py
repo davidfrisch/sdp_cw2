@@ -1,4 +1,6 @@
-def get_history_files(map_files):
+from process_metrics import get_code_churn_file
+
+def get_history_files(map_files, repo_path):
     """
     Returns a list of test files that were created before the target file, 
             a list of test files that were created after the target file, 
@@ -28,11 +30,19 @@ def get_history_files(map_files):
         first_test_date = test_file[0]['commit'].committer_date
         first_target_date = target_file[0]['commit'].committer_date
 
+        first_test_hash = test_file[0]['commit'].hash
+        first_target_hash = target_file[0]['commit'].hash
+        test_file_name = test_file[0]['filename']
+        target_file_name = target_file[0]['filename']
+       
+        test_code_churn,_,_ = get_code_churn_file(repo_path, first_test_hash, first_test_hash, test_file_name)
+        target_code_churn,_,_ = get_code_churn_file(repo_path, first_target_hash, first_target_hash, target_file_name)
+
         if first_test_date < first_target_date:
-            test_files_created_before_target.append({'test': test_file, 'target': target_file, 'first_test_date': first_test_date, 'first_target_date': first_target_date, 'merges': test_target_merged})
+            test_files_created_before_target.append({'test': test_file, 'target': target_file, 'first_test_date': first_test_date, 'first_target_date': first_target_date, 'merges': test_target_merged, 'test_code_churn': test_code_churn, 'target_code_churn': target_code_churn})
         elif first_test_date > first_target_date:
-            test_files_created_after_target.append({'test': test_file, 'target': target_file, 'first_test_date': first_test_date, 'first_target_date': first_target_date, 'merges': test_target_merged})
+            test_files_created_after_target.append({'test': test_file, 'target': target_file, 'first_test_date': first_test_date, 'first_target_date': first_target_date, 'merges': test_target_merged, 'test_code_churn': test_code_churn, 'target_code_churn': target_code_churn})
         else:
-            test_files_created_same_time_as_target.append({'test': test_file, 'target': target_file, 'first_test_date': first_test_date, 'first_target_date': first_target_date, 'merges': test_target_merged})
+            test_files_created_same_time_as_target.append({'test': test_file, 'target': target_file, 'first_test_date': first_test_date, 'first_target_date': first_target_date, 'merges': test_target_merged, 'test_code_churn': test_code_churn, 'target_code_churn': target_code_churn})
         
     return test_files_created_before_target, test_files_created_same_time_as_target, test_files_created_after_target
