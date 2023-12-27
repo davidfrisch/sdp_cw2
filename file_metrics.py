@@ -46,3 +46,34 @@ def get_history_files(map_files, repo_path):
             test_files_created_same_time_as_target.append({'test': test_file, 'target': target_file, 'first_test_date': first_test_date, 'first_target_date': first_target_date, 'merges': test_target_merged, 'test_code_churn': test_code_churn, 'target_code_churn': target_code_churn})
         
     return test_files_created_before_target, test_files_created_same_time_as_target, test_files_created_after_target
+
+
+def get_avg_code_churn_test_target(map_files):
+    """
+      The function computes the average code churn for files with 'target_code_churn' and 'test_code_churn' values, 
+      returning the average for each one.
+    """
+    all_code_churn_test = []
+    all_code_churn_target = []
+    for i in range(len(map_files)):
+        test_churn_value = map_files[i]['test_code_churn']
+        target_churn_value = map_files[i]['target_code_churn']
+        all_code_churn_test.append(test_churn_value)
+        all_code_churn_target.append(target_churn_value)
+
+    avg_test = sum(all_code_churn_test) / len(all_code_churn_test) if len(all_code_churn_test) > 0 else 0
+    avg_target = sum(all_code_churn_target) / len(all_code_churn_target) if len(all_code_churn_target) > 0 else 0
+    return avg_test, avg_target
+
+
+
+def get_avg_code_churn_sum(map_files):
+    """
+      The function computes the average code churn for files with 'target_code_churn' and 'test_code_churn' values, 
+      returning the overall average.
+    """
+    average = []
+    for i in range(0, len(map_files)):
+        average.append((map_files[i]['target_code_churn'] + map_files[i]['test_code_churn']) / 2)
+
+    return sum(average) / len(average) if len(average) > 0 else 0

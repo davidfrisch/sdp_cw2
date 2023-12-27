@@ -2,9 +2,9 @@ import os
 import time
 from constants import list_of_apache_repos
 from parser_java import get_unit_test_files, get_target_files 
-from file_metrics import  get_history_files
+from file_metrics import  get_history_files, get_avg_code_churn_sum, get_avg_code_churn_test_target
 from modfied_file import get_modifications_of_files
-from scoring_tdd import tdd_score
+
 
 def get_branch_name(map_before, map_same, map_after):
     branch_name = None
@@ -15,13 +15,6 @@ def get_branch_name(map_before, map_same, map_after):
     elif len(map_after) > 0:
         branch_name = map_after[0]['test'][0]['commit'].branches
     return branch_name
-
-def get_average_diff(map_files):
-    average = []
-    for i in range(0, len(map_files)):
-        average.append((map_files[i]['target_code_churn'] + map_files[i]['test_code_churn']) / 2)
-
-    return sum(average) / len(average) if len(average) > 0 else 0
 
 
 def get_before_same_after_test_vs_target(apache_repo, filename):
@@ -48,14 +41,18 @@ def get_before_same_after_test_vs_target(apache_repo, filename):
 
     map_before, map_same, map_after = get_history_files(map_files_info, apache_repo)
     branch_name = get_branch_name(map_before, map_same, map_after)
-    average_before = get_average_diff(map_before)
-    average_same = get_average_diff(map_same)
-    average_after = get_average_diff(map_after)
+    average_before = get_avg_code_churn_sum(map_before)
+    average_same = get_avg_code_churn_sum(map_same)
+    average_after = get_avg_code_churn_sum(map_after)
+
+    avg_test_before, avg_target_before = get_avg_code_churn_test_target(map_before)
+    avg_test_same, avg_target_same = get_avg_code_churn_test_target(map_same)
+    avg_test_after, avg_target_after = get_avg_code_churn_test_target(map_after)
 
 
     repo_name = apache_repo.split('/')[-1]
     with open(filename, 'a') as f:
-       f.write(f"{repo_name}\t{branch_name}\t{len(all_test_files)}\t{len(map_files)}\t{len(map_before)}\t{len(map_same)}\t{len(map_after)}\t{average_before}\t{average_same}\t{average_after}\n")
+       f.write(f"{repo_name}\t{branch_name}\t{len(all_test_files)}\t{len(map_files)}\t{len(map_before)}\t{len(map_same)}\t{len(map_after)}\t{average_before}\t{average_same}\t{average_after}\t{avg_test_before}\t{avg_target_before}\t{avg_test_same}\t{avg_target_same}\t{avg_test_after}\t{avg_target_after}\n")
 
     
 
@@ -64,7 +61,7 @@ def get_before_same_after_test_vs_target(apache_repo, filename):
 current_time = time.time()
 filename = f"results_{current_time}.csv"
 with open(filename, 'w') as f:
-    f.write('name\tbranch_name\ttotal_test_files\ttotal_target_files\tfirst_before\tfirst_same\tfirst_after\taverage_diff_before\taverage_diff_same\taverage_diff_after\n')
+    f.write('name\tbranch_name\ttotal_test_files\ttotal_target_files\tfirst_before\tfirst_same\tfirst_after\taverage_diff_before\taverage_diff_same\taverage_diff_after\taverage_test_before\taverage_target_before\taverage_test_same\taverage_target_same\taverage_test_after\taverage_target_after\n')
 
 
 for repo_url in list_of_apache_repos:
