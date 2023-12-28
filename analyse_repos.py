@@ -1,6 +1,6 @@
 import os
 import time
-from constants import list_of_apache_repos
+from constants import list_random_repos_apache_java_100_forks
 from parser_java import get_unit_test_files, get_target_files 
 from file_metrics import  get_history_files, get_avg_code_churn_sum, get_avg_code_churn_test_target
 from modfied_file import get_modifications_of_files
@@ -64,8 +64,13 @@ with open(filename, 'w') as f:
     f.write('name\tbranch_name\ttotal_test_files\ttotal_target_files\tfirst_before\tfirst_same\tfirst_after\taverage_diff_before\taverage_diff_same\taverage_diff_after\taverage_test_before\taverage_target_before\taverage_test_same\taverage_target_same\taverage_test_after\taverage_target_after\n')
 
 
-for repo_url in list_of_apache_repos:
+for repo_url in list_random_repos_apache_java_100_forks:
     base_apache_repos = "/mnt/data/apache_repos/"
     repo_name = repo_url.split('/')[-1].replace('.git', '')
     repo = os.path.join(base_apache_repos, repo_name)
-    get_before_same_after_test_vs_target(repo, filename)
+    try:
+        get_before_same_after_test_vs_target(repo, filename)
+    except Exception as e:
+        print(f"Error in {repo_name}")
+        print(e)
+        continue

@@ -38,6 +38,9 @@ def get_history_files(map_files, repo_path):
         test_code_churn,_,_ = get_code_churn_file(repo_path, first_test_hash, first_test_hash, test_file_name)
         target_code_churn,_,_ = get_code_churn_file(repo_path, first_target_hash, first_target_hash, target_file_name)
 
+        test_code_churn = test_code_churn if isinstance(test_code_churn, int) else 0
+        target_code_churn = target_code_churn if isinstance(target_code_churn, int) else 0
+
         if first_test_date < first_target_date:
             test_files_created_before_target.append({'test': test_file, 'target': target_file, 'first_test_date': first_test_date, 'first_target_date': first_target_date, 'merges': test_target_merged, 'test_code_churn': test_code_churn, 'target_code_churn': target_code_churn})
         elif first_test_date > first_target_date:
@@ -74,6 +77,8 @@ def get_avg_code_churn_sum(map_files):
     """
     average = []
     for i in range(0, len(map_files)):
-        average.append((map_files[i]['target_code_churn'] + map_files[i]['test_code_churn']) / 2)
+        value_target_code_churn = map_files[i]['target_code_churn'] if isinstance(map_files[i]['target_code_churn'], int) else 0
+        value_test_code_churn = map_files[i]['test_code_churn'] if isinstance(map_files[i]['test_code_churn'], int) else 0
+        average.append((value_target_code_churn + value_test_code_churn) / 2)
 
     return sum(average) / len(average) if len(average) > 0 else 0

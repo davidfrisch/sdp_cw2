@@ -16,3 +16,34 @@ list_of_apache_repos = [
   "https://github.com/apache/skywalking.git",
   "https://github.com/apache/flink.git"
 ]
+
+""" 
+https://github.com/apache/orc
+https://github.com/apache/calcite
+https://github.com/apache/doris
+https://github.com/apache/shiro
+https://github.com/apache/incubator-kie-tools
+https://github.com/apache/beam
+https://github.com/apache/shardingsphere
+https://github.com/apache/nifi
+https://github.com/apache/iotdb
+https://github.com/apache/iceberg
+https://github.com/apache/incubator-celeborn
+
+
+ """
+# list above
+list_random_repos_apache_java_100_forks = [
+  # "https://github.com/apache/orc",
+  # "https://github.com/apache/calcite",
+  # "https://github.com/apache/doris",
+  # "https://github.com/apache/shiro",
+  "https://github.com/apache/beam",
+  "https://github.com/apache/shardingsphere",
+  "https://github.com/apache/nifi",
+  "https://github.com/apache/iotdb",
+  "https://github.com/apache/iceberg",
+  "https://github.com/apache/incubator-celeborn",
+  "https://github.com/apache/incubator-kie-tools",
+]
+  
