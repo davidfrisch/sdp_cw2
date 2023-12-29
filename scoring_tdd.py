@@ -70,23 +70,10 @@ def __pos_evaluation_increased_from_previous_commit(commit_history):
         if not isinstance(target_value[i], int) or not isinstance(target_value[i-1], int):
             continue
 
-        if test_value[i] > test_value[i-1] and target_value[i] > target_value[i-1]:
+        if test_value[i] > test_value[i-1] and target_value[i] >= target_value[i-1]:
             score += 1
   
-    return score / len(x_axis) if len(x_axis) > 0 else 0
-
-
-def __pos_evaluation_test_target_on_same_commit(commit_history):
-    x_axis, test_value, target_value = commit_history
-    score = 0
-    for i in range(len(x_axis)):
-        if not isinstance(test_value[i], int) or not isinstance(target_value[i], int):
-            continue
-        
-        if test_value[i] > 0 and target_value[i] > 0:
-            score += 1
-  
-    return score / len(x_axis) if len(x_axis) > 0 else 0
+    return score
 
 
 def __neg_evaluation_target_has_increased_but_test_has_not(commit_history):
@@ -101,40 +88,37 @@ def __neg_evaluation_target_has_increased_but_test_has_not(commit_history):
         if not isinstance(target_value[i], int) or not isinstance(target_value[i-1], int):
             continue
 
-        if test_value[i] == test_value[i-1] and target_value[i] > target_value[i-1]:
+        if test_value[i] <= test_value[i-1] and target_value[i] > target_value[i-1]:
             score -= 1
   
-    return score / len(x_axis) if len(x_axis) > 0 else 0
+    return score
 
 
 def __tdd_score_pair(test, target):
-    list_of_metric = ["number_methods", "nloc", "added_lines", "complexity"]  
-    NUMBER_FUNCTIONS_FOR_POS_SCORING = 2
-    tmp_sccore = 0
-    pos_score = 0
+    list_of_metric = ["number_methods", "added_lines"] 
+    metric_score = {} 
     for metric in list_of_metric:
+        pos_score = 0
+        neg_score = 0
         merge_history = __merge_history_test_vs_target(test, target, metric)
         pos_score += __pos_evaluation_increased_from_previous_commit(merge_history)
-        pos_score += __pos_evaluation_test_target_on_same_commit(merge_history)
-        tmp_sccore += pos_score
-        tmp_sccore += __neg_evaluation_target_has_increased_but_test_has_not(merge_history)
+        neg_score += __neg_evaluation_target_has_increased_but_test_has_not(merge_history)
+        metric_score[metric] = {"pos_score": pos_score, "neg_score": neg_score}
 
-    percentage_tdd = pos_score / (len(list_of_metric) * NUMBER_FUNCTIONS_FOR_POS_SCORING)    
-    return {"tdd_score": tmp_sccore, "percentage": percentage_tdd}
+    return metric_score
 
 
-def tdd_score(map_files):
+def tdd_score(map_files, output_filename):
     if len(map_files) == 0:
         return None
 
-    total_score = 0
-    tdd_percentange = {}
+    all_scores = {}
     for map_ in map_files:
-        results = __tdd_score_pair(map_['test'], map_['target'])
-        total_score += results['tdd_score']
-        tdd_percentange[map_['target'][0]['filename']] = results['percentage']
+        metric_scores = __tdd_score_pair(map_['test'], map_['target'])
+        all_scores[map_['target'][0]['filename']] = metric_scores
 
-
-    average_score = total_score / len(map_files)
-    overall_percentage = sum(tdd_percentange.values()) / len(tdd_percentange.values())
-    return average_score, overall_percentage
+    avg_pos_number_methods = np.mean([x['number_methods']['pos_score'] for x in all_scores.values()])
+    avg_neg_number_methods = np.mean([x['number_methods']['neg_score'] for x in all_scores.values()])
+    avg_pos_added_lines = np.mean([x['added_lines']['pos_score'] for x in all_scores.values()])
+    avg_neg_added_lines = np.mean([x['added_lines']['neg_score'] for x in all_scores.values()])
+    return avg_pos_number_methods, avg_neg_number_methods, avg_pos_added_lines, avg_neg_added_lines

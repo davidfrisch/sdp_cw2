@@ -10,62 +10,107 @@ def get_unit_test_files(repo_path):
     test_files = []
     for root, dirs, files in os.walk(repo_path):
         for file in files:
-          if "/test" in root and file.endswith("Test.java"):
-              test_files.append(os.path.join(root, file))
-          #replace with regex
-          elif "test" in file.lower() and file.endswith(".java"):
-              test_files.append(os.path.join(root, file))
+            if "test" in file.lower() and file.endswith(".java"):
+                  test_files.append({"file": os.path.join(root, file), "name": file})
 
-    unique_test_files = list(set(test_files))
+    # remove with same name
+    unique_test_files = []
+    for test_file in test_files:
+        if test_file["name"] not in [x["name"] for x in unique_test_files]:
+            unique_test_files.append(test_file)
+
+    unique_test_files = [x["file"] for x in unique_test_files]        
     print("Total number of test files: ", len(unique_test_files))
     return unique_test_files
+
+
+
+def select_best_target_file(test_file, target_files):
+    """
+        Given a test file, select the best target file
+    """
+    # Get the directory of the test file
+    # Take the target name closest to the test file name
+    test_directory = test_file.split("/")
+    candiate_score = []
+    for candidate_index in range(len(target_files)):
+        candidate = target_files[candidate_index]
+        candidate_directory = candidate.split("/")
+        score = 0
+        for index in range(len(test_directory)):
+            if test_directory[index] == candidate_directory[index]:
+                score += 1
+            else:
+                break
+        candiate_score.append(score)
+    
+    # Get the candidate with the highest score
+    max_score = max(candiate_score)
+    max_score_index = candiate_score.index(max_score)
+    return target_files[max_score_index]
+
+
 
 def get_target_files(repo_path, all_test_files):
     map_files = []
     test_files = list(set(all_test_files))
     for test_file in test_files:
+        # Find the corresponding target file
+        target_candidate = []
         for root, dirs, files in os.walk(repo_path):
+            # For each files in a directory
             for file in files:
                 if file.endswith(".java"):
                     if test_file.split("/")[-1].replace("Test", "") == file.split("/")[-1]:
                         test_file_name = test_file.split("/")[-1]
-                        map_files.append({'target': file, 'test': test_file_name})
+                        target_candidate.append(os.path.join(root, file))
                         break
 
-    print("Total number of target files found: ", len(map_files))
-    return map_files
+        if len(target_candidate) == 0:
+            continue
+
+        if len(target_candidate) == 1:
+            map_files.append({'target': target_candidate[0].split("/")[-1], 'test': test_file_name, 'test_path': test_file, 'target_path': target_candidate[0]})
+                        
+        if len(target_candidate) > 1:
+            # print("More than one target file found for test file: ")
+            best_target_file = select_best_target_file(test_file, target_candidate)
+            # print("Best target file: ", best_target_file)
+            # print("Test file: ", test_file)
+            map_files.append({'target': best_target_file.split("/")[-1], 'test': test_file_name, 'test_path': test_file, 'target_path': best_target_file})
+        
+        
+    map_witout_duplicates = drop_occurences(map_files)
+    return map_witout_duplicates
 
 
-def get_matching_target_files(repo_path, all_test_files):
-    """
-    Finds and maps .java files in the repository that match with test files
-    in all_test_files (after removing 'Test' from their names, both from start and end).
+def drop_occurences(map_files):
+    target_occurences = {}
+    for map_ in map_files:
+        target = map_['target']
+        test_path = map_['test_path']
+        path_target = map_['target_path']
 
-    :param repo_path: Path to the repository
-    :param all_test_files: List of paths to test files
-    :return: List of mappings between test files and their corresponding target .java files
-    """
-    map_files = []
-    test_file_bases = set()
+        if target not in target_occurences:
+            target_occurences[target] = { 'occurences': 0, 'test_files': [] }
+            target_occurences[target]['test_files'].append(test_path)
 
-    # Generate base names for matching by removing 'Test' from start or end of the file names
-    for f in all_test_files:
-        base_name = os.path.basename(f).replace(".java", "")
-        if base_name.startswith("Test"):
-            test_file_bases.add(base_name[4:])  # Remove 'Test' from start
-        elif base_name.endswith("Test"):
-            test_file_bases.add(base_name[:-4])  # Remove 'Test' from end
+        target_occurences[target]['occurences'] += 1
+        target_occurences[target]['test_files'].append(test_path)
+    
+    # only show occurences with mroe than 1
+    target_occurences = {k: v for k, v in target_occurences.items() if v['occurences'] > 1}
+    print("Total number of target files with occurences: ", len(target_occurences))
 
-    for root, dirs, files in os.walk(repo_path):
-        for file in files:
-            if file.endswith(".java"):
-                file_base = file.replace(".java", "")
-                if file_base in test_file_bases:
-                    # Find the original test file name
-                    test_file_name = next((f for f in all_test_files if file_base in f), None)
-                    if test_file_name:
-                        full_target_file_path = os.path.join(root, file)
-                        map_files.append({'target': full_target_file_path, 'test': test_file_name})
+    target_occurences = list(target_occurences.keys())
 
-    print("Total number of matching target files found: ", len(map_files))
-    return map_files
+    # drop occurences
+    new_map = []
+    for map_ in map_files:
+        target = map_['target']
+        if target not in target_occurences:
+            new_map.append(map_)
+
+    print("Total number of target files:", len(new_map))
+    return new_map
+      
