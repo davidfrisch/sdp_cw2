@@ -62,7 +62,7 @@ def get_before_same_after_test_vs_target(apache_repo, filename):
 current_time = time.time()
 filename = f"results_{current_time}.csv"
 with open(filename, 'w') as f:
-    f.write('name\tbranch_name\ttotal_test_files\ttotal_target_files\tfirst_before\tfirst_same\tfirst_after\taverage_diff_before\taverage_diff_same\taverage_diff_after\taverage_test_before\taverage_target_before\taverage_test_same\taverage_target_same\taverage_test_after\taverage_target_after, average_pos_number_methods, average_neg_number_methods, average_pos_added_lines, average_neg_added_lines\n')
+    f.write('name\tbranch_name\ttotal_test_files\ttotal_target_files\tfirst_before\tfirst_same\tfirst_after\taverage_diff_before\taverage_diff_same\taverage_diff_after\taverage_test_before\taverage_target_before\taverage_test_same\taverage_target_same\taverage_test_after\taverage_target_after\taverage_pos_number_methods\taverage_neg_number_methods\taverage_pos_added_lines\taverage_neg_added_lines\n')
 
 all_repos = list_of_apache_repos + list_random_repos_apache_java_100_forks
 for repo_url in all_repos:

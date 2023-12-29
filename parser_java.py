@@ -73,10 +73,7 @@ def get_target_files(repo_path, all_test_files):
             map_files.append({'target': target_candidate[0].split("/")[-1], 'test': test_file_name, 'test_path': test_file, 'target_path': target_candidate[0]})
                         
         if len(target_candidate) > 1:
-            # print("More than one target file found for test file: ")
             best_target_file = select_best_target_file(test_file, target_candidate)
-            # print("Best target file: ", best_target_file)
-            # print("Test file: ", test_file)
             map_files.append({'target': best_target_file.split("/")[-1], 'test': test_file_name, 'test_path': test_file, 'target_path': best_target_file})
         
         
