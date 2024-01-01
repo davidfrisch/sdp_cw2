@@ -20,14 +20,9 @@ What does it mean "A phase that followed TDD"?
 * A commit where the test file and the target file has been changed
   and the metric of the test file and the target file has increased.
 
-* A commit where the test file and the target file has been changed
-
-* The metric of the test file has increased on commit i 
-  and the metric of the target file has increased on commit i+1 but not the test file.
-
 What does it mean "A phase that did not follow TDD"?
 
-* The metric of the target file has increased on a commit i but not the test file
+* The metric of the target file has increased on a commit but not the test file
 
 """
 

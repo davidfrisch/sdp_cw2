@@ -1,5 +1,5 @@
 name, say_that_follow_tdd
-maven-resolver,yes
+maven-resolver, yes
 airavata, yes
 james-project, yes 
 logging-log4j2, yes

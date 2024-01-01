@@ -1,5 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
+"""
+    This file contains functions to plot the data
+"""
 
 def plot_lines_test_vs_target_dates(metric_lines_test, metric_lines_target, metric):
     
@@ -96,7 +99,6 @@ def plot_lines_test_vs_target_normalise_100(metric_lines_test, metric_lines_targ
     min_value = min(all_dates)
     max_value = max(all_dates)
 
-    # TODO David: check if this is correct the denominator
     denominator = max_value - min_value if max_value - min_value != 0 else 1
     normalized_x_axis = [((date - min_value) / denominator) * 100 for date in all_dates]
     fig, ax = plt.subplots()
@@ -132,10 +134,7 @@ def plot_lines_test_vs_target_numeric_side_by_side(metric_lines_test, metric_lin
     test_file_metric_2.sort(key=lambda x: x[0])
     target_file_metric_2.sort(key=lambda x: x[0])
 
-
-    test_filename = metric_lines_test[0]['filename']
     target_filename = metric_lines_target[0]['filename']
-
 
     test_file_dates = [x[0] for x in test_file_metric_1]
     test_file_values = [x[1] for x in test_file_metric_1]

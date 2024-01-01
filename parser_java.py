@@ -4,8 +4,6 @@ import os
     SPECIFIC TO JAVA
     This file contains functions to parse JAVA files and extract test files and target files
 """
-
-
 def get_unit_test_files(repo_path):
     test_files = []
     for root, dirs, files in os.walk(repo_path):
@@ -52,6 +50,9 @@ def select_best_target_file(test_file, target_files):
 
 
 def get_target_files(repo_path, all_test_files):
+    """
+        Given a list of test files, find the corresponding target files
+    """
     map_files = []
     test_files = list(set(all_test_files))
     for test_file in test_files:
@@ -82,11 +83,13 @@ def get_target_files(repo_path, all_test_files):
 
 
 def drop_occurences(map_files):
+    """
+        Drop occurences of target files with more than 1 occurence.
+    """
     target_occurences = {}
     for map_ in map_files:
         target = map_['target']
         test_path = map_['test_path']
-        path_target = map_['target_path']
 
         if target not in target_occurences:
             target_occurences[target] = { 'occurences': 0, 'test_files': [] }
@@ -97,7 +100,6 @@ def drop_occurences(map_files):
     
     # only show occurences with mroe than 1
     target_occurences = {k: v for k, v in target_occurences.items() if v['occurences'] > 1}
-    print("Total number of target files with occurences: ", len(target_occurences))
 
     target_occurences = list(target_occurences.keys())
 
@@ -108,6 +110,6 @@ def drop_occurences(map_files):
         if target not in target_occurences:
             new_map.append(map_)
 
-    print("Total number of target files:", len(new_map))
+    print("Total number of test/target pairs:", len(new_map))
     return new_map
       

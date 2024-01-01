@@ -1,6 +1,16 @@
 from pydriller import Repository
 import os
+
 def git_see_merge(repo_path, hash):
+    """
+    See the changes of a merge commit.
+    :param repo_path: path to the repository
+    :param hash: hash of the commit
+
+    :return: list of changes
+    """
+
+  
     show_result = os.popen(f"cd {repo_path} && git show --numstat {hash}").read()
     if show_result == "":
         return
@@ -24,6 +34,7 @@ def git_see_merge(repo_path, hash):
             })
             
     return all_files_changes
+
 
 def  get_modifications_of_files(repo_path, files):
     """
