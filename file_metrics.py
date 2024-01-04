@@ -69,7 +69,6 @@ def get_avg_code_churn_test_target(map_files):
     return avg_test, avg_target
 
 
-
 def get_avg_code_churn_sum(map_files):
     """
       The function computes the average code churn for files with 'target_code_churn' and 'test_code_churn' values, 

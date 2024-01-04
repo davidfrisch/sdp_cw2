@@ -67,21 +67,21 @@ def  get_modifications_of_files(repo_path, files):
                                       'number_methods_before': None,
                                       })
 
-      
-        for m in commit.modified_files:
-            if m.filename in files_names:
-                files[m.filename].append({'commit': commit, 
-                                      'filename': m.filename,
-                                      'change_type': m.change_type,
-                                      'added_lines': m.added_lines,
-                                      'deleted_lines': m.deleted_lines,
-                                      'size': m.added_lines + m.deleted_lines,
-                                      'nloc': m.nloc,
-                                      'complexity': m.complexity,
-                                      'token_count': m.token_count,
-                                      'number_methods': len(m.methods),
-                                      'number_methods_before': len(m.methods_before),
-                                      })
+        else:
+            for m in commit.modified_files:
+                if m.filename in files_names:
+                    files[m.filename].append({'commit': commit, 
+                                          'filename': m.filename,
+                                          'change_type': m.change_type,
+                                          'added_lines': m.added_lines,
+                                          'deleted_lines': m.deleted_lines,
+                                          'size': m.added_lines + m.deleted_lines,
+                                          'nloc': m.nloc,
+                                          'complexity': m.complexity,
+                                          'token_count': m.token_count,
+                                          'number_methods': len(m.methods),
+                                          'number_methods_before': len(m.methods_before),
+                                          })
 
 
     return files

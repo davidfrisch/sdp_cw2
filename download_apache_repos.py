@@ -1,5 +1,4 @@
 import os
-import sys
 from constants import list_random_repos_apache_java_100_forks
 
 def git_clone(repo_url):

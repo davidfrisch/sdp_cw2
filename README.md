@@ -20,7 +20,7 @@ python3 analyse_repos.py
 
 ## View from a jupyter notebook
 1. Open the example.ipynb file
-2. Change first cell to the repo you want to analyse
+2. Change the first cell to the repo you want to analyse
 3. Run all cells
 
 ## Authors

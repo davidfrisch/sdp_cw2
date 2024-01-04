@@ -8,20 +8,11 @@ should reflect this. If a new class (file) is created, then the same or an earli
 test class (file)."
 
 Rules:
-
-X is the total number of commits of the test and target file.
-Y the number of phases that followed TDD
-N the number of phases that did not follow TDD
-
-By looking at the metrics:
-Metrics are: number_methods, nloc, added_lines, complexity
-
-What does it mean "A phase that followed TDD"?
+What does it mean "A phase that followed TDD" (+1)?
 * A commit where the test file and the target file has been changed
   and the metric of the test file and the target file has increased.
 
-What does it mean "A phase that did not follow TDD"?
-
+What does it mean "A phase that did not follow TDD" (-1)?
 * The metric of the target file has increased on a commit but not the test file
 
 """
@@ -103,7 +94,7 @@ def __tdd_score_pair(test, target):
     return metric_score
 
 
-def tdd_score(map_files, output_filename):
+def tdd_score(map_files):
     if len(map_files) == 0:
         return None
 

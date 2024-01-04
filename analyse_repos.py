@@ -18,11 +18,12 @@ def get_branch_name(map_before, map_same, map_after):
 
 
 def get_before_same_after_test_vs_target(apache_repo, filename):
+    print("Analyzing repo: ", apache_repo)
+    # RQ1
     all_test_files = get_unit_test_files(apache_repo)
     if len(all_test_files) == 0:
         print("No test files found")
         return
-    print("Analyzing repo: ", apache_repo)
     map_files = get_target_files(apache_repo, all_test_files)
     
     if len(map_files) == 0:
@@ -39,9 +40,14 @@ def get_before_same_after_test_vs_target(apache_repo, filename):
             'target': all_files_info[map_['target']]
         })
 
-    avg_pos_number_methods, avg_neg_number_methods, avg_pos_added_lines, avg_neg_added_lines = tdd_score(map_files_info, f"tdd_{filename}")
+    # Going Further
+    avg_pos_number_methods, avg_neg_number_methods, avg_pos_added_lines, avg_neg_added_lines = tdd_score(map_files_info)
+
+    # RQ2
     map_before, map_same, map_after = get_history_files(map_files_info, apache_repo)
     branch_name = get_branch_name(map_before, map_same, map_after)
+   
+    # RQ3
     average_before = get_avg_code_churn_sum(map_before)
     average_same = get_avg_code_churn_sum(map_same)
     average_after = get_avg_code_churn_sum(map_after)

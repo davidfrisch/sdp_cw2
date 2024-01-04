@@ -1,4 +1,5 @@
 list_of_apache_repos = [
+  # Repos that says they follow TDD
   "https://github.com/apache/airavata.git",
   "https://github.com/apache/james-project.git",
   "https://github.com/apache/logging-log4j2.git",
