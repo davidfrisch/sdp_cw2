@@ -24,4 +24,8 @@ python3 analyse_repos.py
 3. Run all cells
 
 ## Authors
-The authors are anonymised until the receival of the mark.
+- @davidfrisch (me)
+- @TelmaGudmunds
+- @nlepcha23
+- @leon785
+- @Kang2001
